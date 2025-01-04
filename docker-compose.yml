@@ -1,0 +1,61 @@
+version: '3.8'
+services:
+  hub:
+    image: selenium/hub:latest
+    container_name: hub
+    ports:
+      - "4442-4444:4442-4444"
+
+  chrome:
+    image: selenium/node-chrome:4.17.0-20240123
+    shm_size: 2gb
+    depends_on:
+      - hub
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PORT=4444
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "5900:5900"
+    volumes:
+      - /dev/shm:/dev/shm
+
+  firefox:
+    image: selenium/node-firefox:4.18.1-20240224
+    shm_size: 2gb
+    depends_on:
+      - hub
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PORT=4444
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "5900:5901"
+    volumes:
+      - /dev/shm:/dev/shm
+
+  edge:
+    image: selenium/node-edge:4.18.1-20240224
+    shm_size: 2gb
+    depends_on:
+      - hub
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PORT=4444
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "5900:5902"
+    volumes:
+      - /dev/shm:/dev/shm
+
+  behave-test:
+    image: python:3.8
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    command: /bin/bash -c "pip install behave && behave"
+    depends_on:
+      - hub

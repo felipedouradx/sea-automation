@@ -1,0 +1,13 @@
+[{
+  "environments":{
+    "google":{
+      "name":"DB name",
+      "url":"DB URL",
+      "database":"DB mask",
+      "host":"DB host",
+      "port":"port",
+      "user":"DB username",
+      "password":"DB user password"
+    }
+  }
+}]
