@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium_stealth import stealth
 
 
 class WebdriverManager:
@@ -28,6 +29,16 @@ class WebdriverManager:
                     context.browser = webdriver.Remote(command_executor='http://localhost:4444/wd/hub', options=options)
                 else:
                     context.browser = webdriver.Chrome(options=options)
+
+                stealth(
+                    context.browser,
+                    languages=["en-US", "en"],
+                    vendor="Google Inc.",
+                    platform="Win32",
+                    webgl_vendor="Intel Inc.",
+                    renderer="Intel Iris OpenGL Engine",
+                    fix_hairline=True,
+                )
 
             if 'edge' in browser:
                 options = EdgeOptions()
@@ -63,8 +74,8 @@ class WebdriverManager:
 
     @staticmethod
     def get_base_url(context, base_url='google'):
-        if 'google' in base_url:
-            context.browser.get('https://google.com')
+        if 'sea' in base_url:
+            context.browser.get('https://analista-teste.seatecnologia.com.br/')
 
     @staticmethod
     def take_screenshot(driver, scenario_name):

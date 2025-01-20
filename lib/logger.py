@@ -1,7 +1,7 @@
 import logging
 from colorama import init, Fore, Back, Style
 
-init(autoreset=True)  # Automatically reset the color codes after every print
+init(autoreset=True)
 
 
 class Formatter(logging.Formatter):
@@ -19,7 +19,6 @@ class Formatter(logging.Formatter):
 
     def format(self, record):
         message = super().format(record)
-        # Apply color to specific keywords found in the message
         for keyword, color in self.keywords.items():
             message = message.replace(keyword, f'{color}{keyword}{Style.RESET_ALL}')
         return message
@@ -30,4 +29,4 @@ handler = logging.StreamHandler()
 formatter = Formatter('%(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.handlers = [logger.handlers[0]]  # Fix for logs showing multiple times
+logger.handlers = [logger.handlers[0]]

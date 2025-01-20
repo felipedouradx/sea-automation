@@ -1,21 +1,8 @@
 from behave import use_step_matcher
-from lib.db import DB as DB
-from lib.db_setup import DB_setup
 from lib.webdriver_manager import WebdriverManager
 from lib.logger import *
 
 use_step_matcher("parse")
-
-## -----DB setup---------
-# def before_all(context):
-#    setup_db = context.config.userdata.get('setup_db_test_data', 'true')
-
- #   if setup_db == 'true':
- #       environment = context.config.userdata.get('base_url', 'apple')
- #       param = {'environment': environment}
- #        context.db = DB(param)
- #        db_setup = DB_setup(context)
- #        db_setup.setup_database(context)
 
 
 def before_scenario(context, scenario):
