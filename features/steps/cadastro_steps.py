@@ -14,10 +14,10 @@ def step_impl(context):
     cadastro_page.selecionar_add_funcionario()
 
 
-@step("O status do trabalhador Ativo é informado")
-def step_impl(context):
+@step("O status {status} do trabalhador é informado")
+def step_impl(context, status):
     cadastro_page = CadastroPage(context)
-    cadastro_page.informar_status_funcionario()
+    cadastro_page.informar_status_funcionario(status)
 
 
 @step("O campo nome {nome} é preenchido")
@@ -26,10 +26,10 @@ def step_impl(context, nome):
     cadastro_page.inserir_nome(nome)
 
 
-@step("O sexo é informado")
-def step_impl(context):
+@step("O gênero {genero} é informado")
+def step_impl(context, genero):
     cadastro_page = CadastroPage(context)
-    cadastro_page.informar_sexo()
+    cadastro_page.informar_genero(genero)
 
 
 @step("O campo CPF {cpf} é preenchido")
@@ -50,22 +50,22 @@ def step_impl(context, rg):
     cadastro_page.inserir_rg(rg)
 
 
-@step("O cargo 2 é selecionado")
-def step_impl(context):
+@step("O cargo {cargo} é selecionado")
+def step_impl(context, cargo):
     cadastro_page = CadastroPage(context)
-    cadastro_page.selecionar_cargo()
+    cadastro_page.selecionar_cargo(cargo)
 
 
-@step("A atividade é selecionada")
-def step_impl(context):
+@step("A atividade {atividade} é selecionada")
+def step_impl(context, atividade):
     cadastro_page = CadastroPage(context)
-    cadastro_page.selecionar_atividade()
+    cadastro_page.selecionar_atividade(atividade)
 
 
-@step("O CA {ca} é informado")
-def step_impl(context, ca):
+@step("O CA {ca} é informado para a seleção de uso do EPI {epi}")
+def step_impl(context, ca, epi):
     cadastro_page = CadastroPage(context)
-    cadastro_page.inserir_ca(ca)
+    cadastro_page.inserir_ca(ca, epi)
 
 
 @step("O EPI {epi} é adicionado")
@@ -82,6 +82,30 @@ def step_impl(context):
 
 @then("O cadastro do funcionário é realizado com sucesso")
 def step_impl(context):
-    elemento = context.browser.find_element(By.XPATH, "//p[contains(text(),'Hello')]")
-    actual_text = elemento.text
-    assert partial_text in actual_text, f"Expected text to contain '{partial_text}', but found '{actual_text}'"
+    text_element = context.browser.find_element(By.XPATH, "//p[contains(text(),'Hello')]")
+    text = text_element.text
+    assert "Hello" == text, f"Expected text 'Hello', but found '{text}'"
+
+
+@step("O cadastro é salvo")
+def step_impl(context):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.salvar_cadastro()
+
+
+@then("O cadastro é validado via API {nome} {status} {genero} {cpf} {rg} {ca} {data_nascimento} {cargo} {atividade}")
+def step_impl(context, nome, status, genero, cpf, rg, ca, data_nascimento, cargo, atividade):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.validar_cadastro_api(nome, status, genero, cpf, rg, ca, data_nascimento, cargo, atividade)
+
+
+@step("A opção uso de EPI {epi_bool} é selecionada")
+def step_impl(context, epi_bool):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.selecionar_uso_epi(epi_bool)
+
+
+@step("O equipamento {epi} é selecionado {epi_bool}")
+def step_impl(context, epi, epi_bool):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.selecionar_equipamento_epi(epi, epi_bool)
