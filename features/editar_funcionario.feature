@@ -1,7 +1,7 @@
 @allure.label.epic:HomePage
 Feature: Editar Funcionário
 
-    @test
+    @ok
     @allure.label.story:Labels
     Scenario: Editar Funcionário
         Given O usuário está na página do portal de testes SEA Tecnologia

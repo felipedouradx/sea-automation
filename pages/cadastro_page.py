@@ -34,6 +34,7 @@ class CadastroPage:
         self.cargo_3_option = '/html/body/div[2]/div/div/div[2]/div[1]/div/div/div[3]'
         self.cargo_4_option = '/html/body/div[2]/div/div/div[2]/div[1]/div/div/div[4]'
         self.cargo_5_option = '/html/body/div[2]/div/div/div[2]/div[1]/div/div/div[5]'
+        self.nova_atividade_button = '/html/body/div/main/div[2]/div[2]/form/div[4]/div/button'
         self.atividade_dropdown = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[1]/div/div/span[2]'
         self.atividade_1_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[1]'
         self.atividade_2_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[2]'
@@ -50,7 +51,7 @@ class CadastroPage:
         self.epi_dropdown_xpath = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[2]/div/div[1]/div'
         self.epi_option_xpath = '/html/body/div[4]/div/div/div[2]/div[1]/div/div/div[2]'
         self.add_epi_button_xpath = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[2]/span'
-        self.atestado_input_class = 'c-iQPyMC'
+        self.atestado_input = 'file'
 
     def selecionar_add_funcionario(self):
         self.helper.selenium_wait_clickable(2, By.CSS_SELECTOR, self.botao_add_funcionario_selector)
@@ -174,7 +175,7 @@ class CadastroPage:
 
     def adicionar_atestado(self):
         file_path = os.path.join(os.getcwd(), "lib/assets/teste_atestado.pdf")
-        file_input = self.context.browser.find_element(By.CLASS_NAME, self.atestado_input_class)
+        file_input = self.context.browser.find_element(By.ID, self.atestado_input)
         file_input.send_keys(file_path)
 
     def salvar_cadastro(self):
@@ -359,3 +360,34 @@ class CadastroPage:
     def preencher_nome_aleatorio(self):
         nome_text_box = self.context.browser.find_element(By.NAME, self.nome_input_name)
         nome_text_box.send_keys(self.context.nome_aleatorio)
+
+    def selecionar_nova_atividade(self):
+        nova_atividade_button = self.context.browser.find_element(By.XPATH, self.nova_atividade_button)
+        nova_atividade_button.click()
+
+    def validar_cadastro_funcionario_com_arquivo(self, file_name):
+        conn = http.client.HTTPSConnection("analista-teste.seatecnologia.com.br")
+        conn.request("GET", "/employees")
+        response = conn.getresponse()
+        data = response.read()
+
+        try:
+            json_data = json.loads(data)
+
+            if isinstance(json_data, list) and len(json_data) > 0:
+                last_entry = json_data[-1]
+
+                if "file" in last_entry["state"]["employee"]:
+                    file_name_api = last_entry["state"]["employee"]["file"]
+                    assert file_name_api == file_name
+                else:
+                    print('Arquivo não inserido na API.')
+                    raise AssertionError
+            else:
+                print("JSON response is not a list or is empty.")
+                raise
+        except json.JSONDecodeError:
+            print("Failed to decode JSON from response.")
+            raise
+        finally:
+            conn.close()

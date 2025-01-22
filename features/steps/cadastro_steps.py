@@ -1,6 +1,7 @@
 from unittest import TestCase
 from behave import *
 from selenium.common import TimeoutException, NoAlertPresentException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import datetime
@@ -9,6 +10,7 @@ import string
 
 from selenium.webdriver.support.wait import WebDriverWait
 
+from lib.selenium_helper import Helpers
 from pages.cadastro_page import CadastroPage
 
 use_step_matcher("parse")
@@ -99,10 +101,12 @@ def step_impl(context):
     cadastro_page.salvar_cadastro()
 
 
-@then("O cadastro é validado via API {nome} {status} {genero} {cpf} {rg} {ca} {data_nascimento} {cargo} {atividade} {uses_epi} {epi}")
+@then(
+    "O cadastro é validado via API {nome} {status} {genero} {cpf} {rg} {ca} {data_nascimento} {cargo} {atividade} {uses_epi} {epi}")
 def step_impl(context, nome, status, genero, cpf, rg, ca, data_nascimento, cargo, atividade, uses_epi, epi):
     cadastro_page = CadastroPage(context)
-    cadastro_page.validar_cadastro_api(nome, status, genero, cpf, rg, ca, data_nascimento, cargo, atividade, uses_epi, epi)
+    cadastro_page.validar_cadastro_api(nome, status, genero, cpf, rg, ca, data_nascimento, cargo, atividade, uses_epi,
+                                       epi)
 
 
 @step("A opção uso de EPI {uses_epi} é selecionada")
@@ -141,3 +145,37 @@ def step_impl(context):
     except NoAlertPresentException:
         print('Mensagem de erro não visível')
         raise NoAlertPresentException
+
+
+@then("O cadastro de funcionário com atestado de saúde {file_name} é validado via API")
+def step_impl(context, file_name):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.validar_cadastro_funcionario_com_arquivo(file_name)
+
+
+@then("O arquivo é anexado ao cadastro com sucesso")
+def step_impl(context):
+    helpers = Helpers(context)
+    helpers.selenium_wait_presence(2, By.XPATH, f"//*[contains(text(), 'teste_atestado.pdf')]")
+    text_element = context.browser.find_element(By.XPATH, f"//*[contains(text(), 'teste_atestado.pdf')]")
+    text = text_element.text
+    assert 'teste_atestado.pdf' == text, f"Expected text 'teste_atestado.pdf' but got '{text}'"
+
+@then("O formulário de cadastro é apresentado")
+def step_impl(context):
+    text_element = context.browser.find_element(By.XPATH, f"//*[contains(text(), 'O trabalhador está ativo ou inativo?')]")
+    text = text_element.text
+    assert 'O trabalhador está ativo ou inativo?' == text, f"Expected text 'O trabalhador está ativo ou inativo?' but got '{text}'"
+
+
+@then("O opção Adicionar outra atividade é selecionada")
+def step_impl(context):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.selecionar_nova_atividade()
+    nova_atividade_element = context.browser.find_elements(By.XPATH, "//*[contains(text(), 'Selecione a atividade:')]")
+    elements_count = len(nova_atividade_element)
+    if elements_count == 2:
+        print("More than one 'Selecione a atividade:' exists.")
+    else:
+        print("One or no 'Selecione a atividade:' exists.")
+        raise AssertionError

@@ -1,9 +1,9 @@
-@allure.label.epic:HomePage
-Feature: Validar botão Adicionar Atividade
+@allure.label.epic:CadastroFuncionário
+Feature: Cadastro de funcionário com inserção de arquivo
 
     @ok
     @allure.label.story:Labels
-    Scenario Outline: Validar botão Adicionar Atividade
+    Scenario Outline: Cadastro de funcionário sem EPI e sem Atestado de Saúde
         Given O usuário está na página do portal de testes SEA Tecnologia
         When O botão adicionar funcionário é selecionado
         And O status <status> do trabalhador é informado
@@ -17,8 +17,12 @@ Feature: Validar botão Adicionar Atividade
         And O equipamento <epi> é selecionado <uses_epi>
         And O CA <ca> é informado para a seleção de uso do EPI <uses_epi>
         And A atividade <atividade> é selecionada para o uso de epi <uses_epi>
-        Then O opção Adicionar outra atividade é selecionada
+        And O arquivo do atestado de saúde é inserido
+        Then O arquivo é anexado ao cadastro com sucesso
+        And O cadastro é salvo
+        Then O cadastro de funcionário com atestado de saúde <file_name> é validado via API
+
 
     Examples:
-      | nome      | cpf         | data_nascimento | rg      | ca    | status  | genero    | cargo | atividade | uses_epi | epi               |
-      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Inativo | feminino  | 02    | 02        | True     | Protetor auditivo |
+      | nome      | cpf         | data_nascimento | rg      | ca    | status  | genero    | cargo | atividade | uses_epi | epi | file_name          |
+      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Inativo | feminino  | 02    | 00        | False    | **  | teste_atestado.pdf |
