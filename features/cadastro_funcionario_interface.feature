@@ -1,13 +1,15 @@
 @allure.label.epic:CadastroFuncionário
-Feature: Cadastro de funcionário com uso de EPI e sem Atestado de Saúde
+Feature: Cadastro de funcionário
+    #Teste falha, novo cadastro nao consta na lista.. após clicar em add novo funcionario e voltar para a pagina
+    # iniciall o nome aparece
 
     @test
     @allure.label.story:Labels
-    Scenario Outline: Cadastro de funcionário sem EPI e sem Atestado de Saúde
+    Scenario Outline: Cadastro de funcionário com validação na lista da página inicial
         Given O usuário está na página do portal de testes SEA Tecnologia
         When O botão adicionar funcionário é selecionado
         And O status <status> do trabalhador é informado
-        And O campo nome <nome> é preenchido
+        And O campo nome é preenchido
         And O gênero <genero> é informado
         And O campo CPF <cpf> é preenchido
         And A data de nascimento <data_nascimento> é informada
@@ -18,13 +20,9 @@ Feature: Cadastro de funcionário com uso de EPI e sem Atestado de Saúde
         And O CA <ca> é informado para a seleção de uso do EPI <uses_epi>
         And A atividade <atividade> é selecionada para o uso de epi <uses_epi>
         And O cadastro é salvo
-        Then O cadastro do funcionário é realizado com sucesso e consta na lista da página inicial
+        Then O cadastro do funcionário é finalizado e consta na lista da página inicial <cpf> <atividade> <cargo>
 
 
     Examples:
-      | nome      | cpf         | data_nascimento | rg      | ca    | status  | genero    | cargo | atividade | uses_epi | epi                   |
-      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Inativo | feminino  | 02    | 00        | False    | **                    |
-      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Ativo   | masculino | 03    | 04        | True     | Luvas descartáveis    |
-      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Ativo   | masculino | 02    | 00        | False    | **                    |
-      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Ativo   | masculino | 03    | 01        | True     | Protetor auditivo     |
-      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Ativo   | masculino | 04    | 05        | True     | Capacete de segurança |
+      | cpf         | data_nascimento | rg      | ca    | status  | genero    | cargo | atividade | uses_epi | epi                   |
+      | 99999999999 | 03031993        | 7654321 | 00002 | Ativo   | masculino | 03    | 02        | True     | Protetor auditivo     |

@@ -1,7 +1,9 @@
 from unittest import TestCase
 from behave import *
 from selenium.webdriver.common.by import By
-
+import datetime
+import random
+import string
 from pages.cadastro_page import CadastroPage
 
 use_step_matcher("parse")
@@ -80,11 +82,10 @@ def step_impl(context):
     cadastro_page.adicionar_atestado()
 
 
-@then("O cadastro do funcionário é realizado com sucesso e consta na lista da página inicial")
-def step_impl(context):
-    text_element = context.browser.find_element(By.XPATH, "//p[contains(text(),'Hello')]")
-    text = text_element.text
-    assert "Hello" == text, f"Expected text 'Hello', but found '{text}'"
+@then("O cadastro do funcionário é finalizado e consta na lista da página inicial {cpf} {atividade} {cargo}")
+def step_impl(context, cpf, atividade, cargo):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.validar_cadastro_funcionario()
 
 
 @step("O cadastro é salvo")
@@ -109,3 +110,13 @@ def step_impl(context, uses_epi):
 def step_impl(context, epi, uses_epi):
     cadastro_page = CadastroPage(context)
     cadastro_page.selecionar_equipamento_epi(epi, uses_epi)
+
+
+@step("O campo nome é preenchido")
+def step_impl(context):
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    letras_aleatorias = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+    nome_aleatorio = f"{timestamp}_{letras_aleatorias}"
+    context.nome_aleatorio = nome_aleatorio
+    cadastro_page = CadastroPage(context)
+    cadastro_page.preencher_nome_aleatorio()

@@ -3,6 +3,7 @@ import os
 import json
 import re
 import time
+import datetime
 
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -309,7 +310,8 @@ class CadastroPage:
         if uses_epi == 'True':
             pass
         elif uses_epi == 'False':
-            epi_checkbox = self.context.browser.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/label/span[1]/input')
+            epi_checkbox = self.context.browser.find_element(By.XPATH,
+                                                             '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/label/span[1]/input')
             epi_checkbox.click()
 
     def selecionar_equipamento_epi(self, epi, uses_epi):
@@ -349,8 +351,11 @@ class CadastroPage:
         else:
             print('O valor deve ser boolean.')
 
+    def validar_cadastro_funcionario(self):
+        text_element = self.context.browser.find_element(By.XPATH, f"//*[contains(text(), '{self.context.nome_aleatorio}')]")
+        text = text_element.text
+        assert self.context.nome_aleatorio == text, f"Expected text '{self.context.nome_aleatorio}' but got '{text}'"
 
-
-
-
-
+    def preencher_nome_aleatorio(self):
+        nome_text_box = self.context.browser.find_element(By.NAME, self.nome_input_name)
+        nome_text_box.send_keys(self.context.nome_aleatorio)
