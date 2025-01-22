@@ -2,6 +2,10 @@ import http
 import os
 import json
 import re
+import time
+
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -33,8 +37,9 @@ class CadastroPage:
         self.atividade_1_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[1]'
         self.atividade_2_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[2]'
         self.atividade_3_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[3]'
-        self.atividade_4_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[4]'
+        self.atividade_4_option = 'body > div:nth-child(3) > div > div > div.rc-virtual-list > div.rc-virtual-list-holder > div > div > div:nth-child(4)'
         self.atividade_5_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[5]'
+        self.epi_1_dropdown = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[2]/div/div[1]/div/div/span[2]'
         self.epi_1_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[1]'
         self.epi_2_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[2]'
         self.epi_3_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[3]'
@@ -116,38 +121,45 @@ class CadastroPage:
             print('Cargo inválido.')
             raise
 
-    def selecionar_atividade(self, atividade):
-        atividade_dropdown = self.context.browser.find_element(By.XPATH, self.atividade_dropdown)
-        atividade_dropdown.click()
-        if atividade == '01':
-            self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_1_option)
-            atividade_1_option = self.context.browser.find_element(By.XPATH, self.atividade_1_option)
-            atividade_1_option.click()
-        elif atividade == '02':
-            self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_2_option)
-            atividade_2_option = self.context.browser.find_element(By.XPATH, self.atividade_2_option)
-            atividade_2_option.click()
-        elif atividade == '03':
-            self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_3_option)
-            atividade_3_option = self.context.browser.find_element(By.XPATH, self.atividade_3_option)
-            atividade_3_option.click()
-        elif atividade == '04':
-            self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_4_option)
-            atividade_4_option = self.context.browser.find_element(By.XPATH, self.atividade_4_option)
-            atividade_4_option.click()
-        elif atividade == '05':
-            self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_5_option)
-            atividade_5_option = self.context.browser.find_element(By.XPATH, self.atividade_5_option)
-            atividade_5_option.click()
+    def selecionar_atividade(self, atividade, uses_epi):
+        time.sleep(1)
+        if uses_epi == 'True':
+            atividade_dropdown = self.context.browser.find_element(By.XPATH, self.atividade_dropdown)
+            atividade_dropdown.click()
+            if atividade == '01':
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_1_option)
+                atividade_1_option = self.context.browser.find_element(By.XPATH, self.atividade_1_option)
+                atividade_1_option.click()
+            elif atividade == '02':
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_2_option)
+                atividade_2_option = self.context.browser.find_element(By.XPATH, self.atividade_2_option)
+                atividade_2_option.click()
+            elif atividade == '03':
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_3_option)
+                atividade_3_option = self.context.browser.find_element(By.XPATH, self.atividade_3_option)
+                atividade_3_option.click()
+            elif atividade == '04':
+                self.helper.selenium_wait_clickable(2, By.CSS_SELECTOR, self.atividade_4_option)
+                atividade_4_option = self.context.browser.find_element(By.CSS_SELECTOR, self.atividade_4_option)
+                atividade_4_option.click()
+            elif atividade == '05':
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_5_option)
+                atividade_5_option = self.context.browser.find_element(By.XPATH, self.atividade_5_option)
+                atividade_5_option.click()
+            else:
+                print('Atividade inválida.')
+                raise
+        elif uses_epi == 'False':
+            pass
         else:
-            print('Atividade inválida.')
-            raise
+            print('O valor deve ser boolean.')
 
-    def inserir_ca(self, ca, epi):
-        if epi == 'Sim':
+    def inserir_ca(self, ca, uses_epi):
+        if uses_epi == 'True':
             ca_text_box = self.context.browser.find_element(By.NAME, self.ca_input_name)
             ca_text_box.send_keys(ca)
-        else:
+        elif uses_epi == 'False':
+            print('O funcionário não utiliza API')
             pass
 
     def adicionar_epi(self, epi):
@@ -168,12 +180,14 @@ class CadastroPage:
         save_button = self.context.browser.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div[2]/form/button')
         save_button.click()
 
-    def validar_cadastro_api(self, nome, status, genero, cpf, rg, ca, data_nascimento, cargo, atividade):
+    def validar_cadastro_api(self, nome, status, genero, cpf, rg, ca, data_nascimento, cargo, atividade, uses_epi, epi):
         conn = http.client.HTTPSConnection("analista-teste.seatecnologia.com.br")
         conn.request("GET", "/employees")
 
         response = conn.getresponse()
         data = response.read()
+
+        errors = []
 
         try:
             json_data = json.loads(data)
@@ -182,95 +196,159 @@ class CadastroPage:
                 last_entry = json_data[-1]
 
                 if "isActive" in last_entry["state"]["employee"]:
-                    if status == 'Ativo':
-                        status = True
-                    elif status == 'Inativo':
-                        status = False
-                    is_active_value = last_entry["state"]["employee"]["isActive"]
-                    assert isinstance(is_active_value,
-                                      bool), f"isActive should be a boolean but got {type(is_active_value)}"
-                    assert is_active_value == status
+                    try:
+                        if status == 'Ativo':
+                            status = True
+                        elif status == 'Inativo':
+                            status = False
+                        is_active_value = last_entry["state"]["employee"]["isActive"]
+                        assert isinstance(is_active_value,
+                                          bool), f"isActive should be a boolean but got {type(is_active_value)}"
+                        assert is_active_value == status
+                    except AssertionError as e:
+                        errors.append(f"isActive validation failed: {e}")
+
                 if "cpf" in last_entry["state"]["employee"]:
-                    cpf_value = last_entry["state"]["employee"]["cpf"]
-                    assert len(cpf_value) == 11, f"CPF should be 11 digits but got {cpf_value}"
-                    assert cpf_value.isdigit()
-                    assert cpf_value == cpf
+                    try:
+                        cpf_value = last_entry["state"]["employee"]["cpf"]
+                        assert len(cpf_value) == 11, f"CPF should be 11 digits but got {cpf_value}"
+                        assert cpf_value.isdigit()
+                        assert cpf_value == cpf
+                    except AssertionError as e:
+                        errors.append(f"CPF validation failed: {e}")
+
                 if "name" in last_entry["state"]["employee"]:
-                    name_value = last_entry["state"]["employee"]["name"]
-                    assert len(name_value) < 100, f"CPF should be less of 100 digits."
-                    assert re.fullmatch(r"[A-Za-z\s]+",
-                                        name_value), f"Name should contain only letters and spaces but got {name_value}"
-                    assert name_value == nome
+                    try:
+                        name_value = last_entry["state"]["employee"]["name"]
+                        assert len(name_value) < 100, f"Name should be less than 100 characters."
+                        assert re.fullmatch(r"[A-Za-z\s]+",
+                                            name_value), f"Name should contain only letters and spaces but got {name_value}"
+                        assert name_value == nome
+                    except AssertionError as e:
+                        errors.append(f"Name validation failed: {e}")
+
                 if "gender" in last_entry["state"]["employee"]:
-                    gender_value = last_entry["state"]["employee"]["gender"]
-                    assert gender_value == genero
+                    try:
+                        gender_value = last_entry["state"]["employee"]["gender"]
+                        assert gender_value == genero
+                    except AssertionError as e:
+                        errors.append(f"Gender validation failed: {e}")
+
+                if "usesEpi" in last_entry["state"]["employee"]:
+                    try:
+                        uses_epi_value = last_entry["state"]["employee"]["usesEpi"]
+                        assert uses_epi_value == uses_epi
+                    except AssertionError as e:
+                        errors.append(f"usesEpi validation failed: {e}")
+
                 if "rg" in last_entry["state"]["employee"]:
-                    rg_value = last_entry["state"]["employee"]["rg"]
-                    assert rg_value.isdigit()
-                    assert rg_value == rg
-                if "caNumber" in last_entry["state"]["employee"]:
-                    ca_value = last_entry["state"]["employee"]["caNumber"]
-                    assert ca_value.isdigit()
-                    assert ca_value == ca
+                    try:
+                        rg_value = last_entry["state"]["employee"]["rg"]
+                        assert rg_value.isdigit()
+                        assert rg_value == rg
+                    except AssertionError as e:
+                        errors.append(f"RG validation failed: {e}")
+
                 if "birthDay" in last_entry["state"]["employee"]:
-                    parsed_date = datetime.strptime(data_nascimento, "%d%m%Y")
-                    formatted_date = parsed_date.strftime("%Y-%m-%d")
-                    birthday_value = last_entry["state"]["employee"]["birthDay"]
-                    assert birthday_value == formatted_date
-                if "activity" in last_entry["state"]["employee"]:
-                    activity_value = last_entry["state"]["employee"]["activity"]
-                    expected_activity_value = f"Ativid {atividade}"
-                    assert activity_value == expected_activity_value, f"Expected activity '{expected_activity_value}' but got '{activity_value}'"
+                    try:
+                        parsed_date = datetime.strptime(data_nascimento, "%d%m%Y")
+                        formatted_date = parsed_date.strftime("%Y-%m-%d")
+                        birthday_value = last_entry["state"]["employee"]["birthDay"]
+                        assert birthday_value == formatted_date
+                    except AssertionError as e:
+                        errors.append(f"BirthDay validation failed: {e}")
+
+                if uses_epi == 'True':
+                    if "caNumber" in last_entry["state"]["employee"]:
+                        try:
+                            ca_value = last_entry["state"]["employee"]["caNumber"]
+                            assert ca_value.isdigit()
+                            assert ca_value == ca
+                        except AssertionError as e:
+                            errors.append(f"CA Number validation failed: {e}")
+
+                    if "activity" in last_entry["state"]["employee"]:
+                        try:
+                            activity_value = last_entry["state"]["employee"]["activity"]
+                            expected_activity_value = f"Ativid {atividade}"
+                            assert activity_value == expected_activity_value, f"Expected activity '{expected_activity_value}' but got '{activity_value}'"
+                        except AssertionError as e:
+                            errors.append(f"Activity validation failed: {e}")
+
+                    if "epi" in last_entry["state"]["employee"]:
+                        try:
+                            epi_value = last_entry["state"]["employee"]["epi"]
+                            formatted_epi_value = re.sub(r'\s+', '-', epi.lower().strip())
+                            assert epi_value == formatted_epi_value, f"Expected epi '{formatted_epi_value}' but got '{epi_value}'"
+                        except AssertionError as e:
+                            errors.append(f"EPI validation failed: {e}")
+                    if not "epi" in last_entry["state"]["employee"]:
+                        print(f"Erro: Valor epi '{epi}' não enviado para o endpoint.")
+                        raise
+
                 if "role" in last_entry["state"]["employee"]:
-                    role_value = last_entry["state"]["employee"]["role"]
-                    expected_role_value = f"Cargo {cargo}"
-                    assert role_value == expected_role_value, f"Expected role '{expected_role_value}' but got '{role_value}'"
+                    try:
+                        role_value = last_entry["state"]["employee"]["role"]
+                        expected_role_value = f"Cargo {cargo}"
+                        assert role_value == expected_role_value, f"Expected role '{expected_role_value}' but got '{role_value}'"
+                    except AssertionError as e:
+                        errors.append(f"Role validation failed: {e}")
+
             else:
-                raise AssertionError("JSON response is not a list or is empty.")
+                errors.append("JSON response is not a list or is empty.")
+
         except json.JSONDecodeError:
-            raise AssertionError("Failed to decode JSON from response.")
-        except AssertionError as e:
-            print(f"Validation error: {e}")
-            raise
+            errors.append("Failed to decode JSON from response.")
         finally:
             conn.close()
 
-    def selecionar_uso_epi(self, epi_bool):
-        if epi_bool:
+        if errors:
+            raise AssertionError("Validation errors occurred:\n" + "\n".join(errors))
+
+    def selecionar_uso_epi(self, uses_epi):
+        if uses_epi == 'True':
+            pass
+        elif uses_epi == 'False':
             epi_checkbox = self.context.browser.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/label/span[1]/input')
             epi_checkbox.click()
-        else:
-            pass
 
-    def selecionar_equipamento_epi(self, epi, epi_bool):
-        if epi_bool:
-            epi_dropdown = self.context.browser.find_element(By.XPATH, self.atividade_dropdown)
+    def selecionar_equipamento_epi(self, epi, uses_epi):
+        if uses_epi == 'True':
+            time.sleep(2)
+            epi_dropdown = self.context.browser.find_element(By.XPATH, self.epi_1_dropdown)
             epi_dropdown.click()
+            time.sleep(1)
             if epi == 'Capacete de segurança':
-                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_1_option)
-                atividade_1_option = self.context.browser.find_element(By.XPATH, self.atividade_1_option)
-                atividade_1_option.click()
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.epi_1_option)
+                epi_1_option = self.context.browser.find_element(By.XPATH, self.epi_1_option)
+                epi_1_option.click()
             elif epi == 'Luvas descartáveis':
-                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_2_option)
-                atividade_2_option = self.context.browser.find_element(By.XPATH, self.atividade_2_option)
-                atividade_2_option.click()
-            elif epi == 'Óculos de proteção':
-                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_3_option)
-                atividade_3_option = self.context.browser.find_element(By.XPATH, self.atividade_3_option)
-                atividade_3_option.click()
-            elif epi == 'Calçado de Segurança ':
-                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_4_option)
-                atividade_4_option = self.context.browser.find_element(By.XPATH, self.atividade_4_option)
-                atividade_4_option.click()
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.epi_2_option)
+                epi_2_option = self.context.browser.find_element(By.XPATH, self.epi_2_option)
+                epi_2_option.click()
+            elif epi == 'Oculos de proteçao':
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.epi_3_option)
+                epi_3_option = self.context.browser.find_element(By.XPATH, self.epi_3_option)
+                epi_3_option.click()
+            elif epi == 'Calçado de Segurança':
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.epi_4_option)
+                epi_4_option = self.context.browser.find_element(By.XPATH, self.epi_4_option)
+                epi_4_option.click()
             elif epi == 'Protetor auditivo':
-                self.helper.selenium_wait_clickable(2, By.XPATH, self.atividade_5_option)
-                atividade_5_option = self.context.browser.find_element(By.XPATH, self.atividade_5_option)
-                atividade_5_option.click()
+                self.helper.selenium_wait_clickable(2, By.XPATH, self.epi_5_option)
+                epi_5_option = self.context.browser.find_element(By.XPATH, self.epi_5_option)
+                epi_5_option.click()
             else:
                 print('Epi inválido.')
                 raise
-        else:
+            actions = ActionChains(self.context.browser)
+            actions.move_to_element(epi_dropdown).send_keys(Keys.ESCAPE).perform()
+
+        elif uses_epi == 'False':
             pass
+        else:
+            print('O valor deve ser boolean.')
+
 
 
 
