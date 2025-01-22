@@ -1,9 +1,14 @@
 from unittest import TestCase
 from behave import *
-from selenium.webdriver.common.by import By
+from selenium.common import TimeoutException, NoAlertPresentException
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import datetime
 import random
 import string
+
+from selenium.webdriver.support.wait import WebDriverWait
+
 from pages.cadastro_page import CadastroPage
 
 use_step_matcher("parse")
@@ -120,3 +125,19 @@ def step_impl(context):
     context.nome_aleatorio = nome_aleatorio
     cadastro_page = CadastroPage(context)
     cadastro_page.preencher_nome_aleatorio()
+
+
+@step("O cadastro é salvo com os campos vazios")
+def step_impl(context):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.salvar_cadastro()
+
+
+@then("Um alerta de preenchimento é apresentado")
+def step_impl(context):
+    try:
+        wait = WebDriverWait(context, 2)
+        wait.until(EC.alert_is_present())
+    except NoAlertPresentException:
+        print('Mensagem de erro não visível')
+        raise NoAlertPresentException
