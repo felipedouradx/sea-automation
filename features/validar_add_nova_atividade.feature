@@ -1,9 +1,9 @@
 @allure.label.epic:HomePage
-Feature: Validar botão Adicionar Atividade
+Feature: Validar opção Adicionar Atividade
 
     @ok
     @allure.label.story:Labels
-    Scenario Outline: Validar botão Adicionar Atividade
+    Scenario Outline: Validar opção Adicionar Atividade
         Given O usuário está na página do portal de testes SEA Tecnologia
         When O botão adicionar funcionário é selecionado
         And O status <status> do trabalhador é informado

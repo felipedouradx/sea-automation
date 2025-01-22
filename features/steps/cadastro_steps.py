@@ -89,8 +89,8 @@ def step_impl(context):
     cadastro_page.adicionar_atestado()
 
 
-@then("O cadastro do funcionário é finalizado e consta na lista da página inicial {cpf} {atividade} {cargo}")
-def step_impl(context, cpf, atividade, cargo):
+@then("O cadastro do funcionário é finalizado e consta na lista da página inicial")
+def step_impl(context):
     cadastro_page = CadastroPage(context)
     cadastro_page.validar_cadastro_funcionario()
 
@@ -121,7 +121,7 @@ def step_impl(context, epi, uses_epi):
     cadastro_page.selecionar_equipamento_epi(epi, uses_epi)
 
 
-@step("O campo nome é preenchido")
+@step("O campo nome é preenchido com valor aleatório e timestamp para validação")
 def step_impl(context):
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     letras_aleatorias = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
@@ -161,9 +161,11 @@ def step_impl(context):
     text = text_element.text
     assert 'teste_atestado.pdf' == text, f"Expected text 'teste_atestado.pdf' but got '{text}'"
 
+
 @then("O formulário de cadastro é apresentado")
 def step_impl(context):
-    text_element = context.browser.find_element(By.XPATH, f"//*[contains(text(), 'O trabalhador está ativo ou inativo?')]")
+    text_element = context.browser.find_element(By.XPATH,
+                                                f"//*[contains(text(), 'O trabalhador está ativo ou inativo?')]")
     text = text_element.text
     assert 'O trabalhador está ativo ou inativo?' == text, f"Expected text 'O trabalhador está ativo ou inativo?' but got '{text}'"
 
@@ -179,3 +181,62 @@ def step_impl(context):
     else:
         print("One or no 'Selecione a atividade:' exists.")
         raise AssertionError
+
+
+@then("O opção Adicionar EPI é selecionada")
+def step_impl(context):
+    cadastro_page = CadastroPage(context)
+    cadastro_page.selecionar_adicionar_epi()
+    adicionar_epi_element = context.browser.find_elements(By.XPATH, "//*[contains(text(), 'Selecione o EPI:')]")
+    elements_count = len(adicionar_epi_element)
+    if elements_count == 2:
+        print("More than one 'Selecione o EPI:' exists.")
+    else:
+        print("One or no 'Selecione o EPI:' exists.")
+        raise AssertionError
+
+
+@when("O número de funcionários ativos é verificado")
+def step_impl(context):
+    lista_ativos_element = context.browser.find_element(By.XPATH, '/html/body/div/main/div[2]/div[2]/div[2]/div[2]/div')
+    child_elements = lista_ativos_element.find_elements(By.XPATH, './*')
+    context.lista_ativos = len(child_elements)
+
+
+@step("O número total de funcionários é verificado")
+def step_impl(context):
+    lista_todos_element = context.browser.find_element(By.XPATH, '/html/body/div/main/div[2]/div[2]/div[2]/div[2]/div')
+    child_elements = lista_todos_element.find_elements(By.XPATH, './*')
+    context.lista_todos = len(child_elements)
+
+
+@then("O contador é validado com sucesso")
+def step_impl(context):
+    contador_element = context.browser.find_element(By.XPATH, '/html/body/div/main/div[2]/div[2]/div[2]/div[2]/span')
+    span_text = contador_element.text.strip()
+
+    lista_ativos_str = str(context.lista_ativos)
+    lista_todos_str = str(context.lista_todos)
+
+    assert lista_ativos_str in span_text and lista_todos_str in span_text, \
+        f"Assertion failed! Expected 'Ativos {lista_ativos_str}/{lista_todos_str}' in '{span_text}'"
+
+
+@then('O formato do CPF {cpf} é validado')
+def step_validar_formato_cpf(context, cpf):
+    cpf_field = context.browser.find_element(By.XPATH, "//input[@name='cpf']")
+    cpf_value = cpf_field.get_attribute("value").strip()
+    num_digits = len([digit for digit in cpf_value if digit.isdigit()])
+    if num_digits < 11:
+        raise AssertionError(
+            f"CPF has only {num_digits} digits. Please add {11 - num_digits} more digit(s) to make it exactly 11."
+        )
+    if num_digits > 11:
+        truncated_value = ''.join([digit for digit in cpf_value if digit.isdigit()])[:11]
+        raise AssertionError(
+            f"CPF has {num_digits} digits. Only the first 11 digits '{truncated_value}' have been saved. "
+            "Please ensure the CPF has exactly 11 digits."
+        )
+    assert num_digits == 11, f"Expected 11 digits, but got {num_digits} in '{cpf_value}'"
+    assert cpf_value.isdigit(), f"CPF contains invalid characters: {cpf_value}"
+

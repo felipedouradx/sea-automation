@@ -1,12 +1,10 @@
-@allure.label.epic:CadastroFuncionário
-Feature: Cadastro de funcionário com uso de EPI e sem Atestado de Saúde
+@allure.label.epic:HomePage
+Feature: Listar funcionário por filtro
 
-    @test
+    @ok
     @allure.label.story:Labels
-    Scenario: Cadastro de funcionário sem EPI e sem Atestado de Saúde
+    Scenario: Listar funcionário por filtro
         Given O usuário está na página do portal de testes SEA Tecnologia
         When O filtro Ver apenas ativos é selecionado
-        And O botão Limpar filtros é pressionado
-        Then Os filtros são limpos
-
-
+        And O número de funcionários ativos é verificado
+        Then Os funcionários ativos são listados

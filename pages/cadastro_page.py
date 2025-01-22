@@ -41,6 +41,7 @@ class CadastroPage:
         self.atividade_3_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[3]'
         self.atividade_4_option = 'body > div:nth-child(3) > div > div > div.rc-virtual-list > div.rc-virtual-list-holder > div > div > div:nth-child(4)'
         self.atividade_5_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[5]'
+        self.adicionar_epi_button = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[2]/span'
         self.epi_1_dropdown = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[2]/div/div[1]/div/div/span[2]'
         self.epi_1_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[1]'
         self.epi_2_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[2]'
@@ -391,3 +392,7 @@ class CadastroPage:
             raise
         finally:
             conn.close()
+
+    def selecionar_adicionar_epi(self):
+        adicionar_epi_button = self.context.browser.find_element(By.XPATH, self.adicionar_epi_button)
+        adicionar_epi_button.click()
