@@ -23,7 +23,7 @@ através de TAG's (para uso de determinado filtro). De acordo com os seguintes p
 * All-tests:
 
     
-    behave ./features
+    behave -D browser=chrome -D headless=false -D remote=false -D base_url=sea -D device=desktop -f allure_behave.formatter:AllureFormatter -o allure-results ./features
 
 * TAG's:
 
