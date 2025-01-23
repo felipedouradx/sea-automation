@@ -3,7 +3,7 @@ Feature: Cadastro de funcionário com inserção de arquivo
 
     @ok
     @allure.label.story:Labels
-    Scenario Outline: Cadastro de funcionário sem EPI e sem Atestado de Saúde
+    Scenario Outline: Cadastro de funcionário com Atestado de Saúde
         Given O usuário está na página do portal de testes SEA Tecnologia
         When O botão adicionar funcionário é selecionado
         And O status <status> do trabalhador é informado

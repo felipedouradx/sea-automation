@@ -30,8 +30,10 @@ def step_impl(context):
 def step_impl(context):
     if context.lista_ativos == context.lista_todos:
         assert True
-    assert context.lista_ativos < context.lista_todos, \
-        f"Assertion failed! Expected 'Lista de ativos {context.lista_ativos} é maior que {context.lista_todos}'."
+    elif context.lista_ativos < context.lista_todos:
+        assert True
+    else:
+        assert False
 
 
 @when("O menu de opções do funcionário é selecionado")
@@ -240,4 +242,4 @@ def step_impl(context):
 
 @then("Os funcionários ativos são listados")
 def step_impl(context):
-    assert context.lista_ativos >= 0, f"'É esperado funcionários ativos, conforme o protótipo. Found: {context.lista_ativos}'"
+    assert context.lista_ativos >= 2, f"'É esperado funcionários ativos, conforme o protótipo. Found: {context.lista_ativos}'"

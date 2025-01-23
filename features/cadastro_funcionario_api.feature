@@ -1,9 +1,9 @@
 @allure.label.epic:CadastroFuncionário
-Feature: Cadastro de funcionário com uso de EPI e sem Atestado de Saúde
+Feature: Cadastro de funcionário com validação via API
 
     @ok
     @allure.label.story:Labels
-    Scenario Outline: Cadastro de funcionário sem EPI e sem Atestado de Saúde
+    Scenario Outline: Cadastro de funcionário com validação via API
         Given O usuário está na página do portal de testes SEA Tecnologia
         When O botão adicionar funcionário é selecionado
         And O status <status> do trabalhador é informado

@@ -1,7 +1,5 @@
 @allure.label.epic:CadastroFuncionário
-Feature: Cadastro de funcionário
-    #Teste falha, novo cadastro nao consta na lista.. após clicar em add novo funcionario e voltar para a pagina
-    # iniciall o nome aparece
+Feature: Cadastro de funcionário com validação na interface
 
     @ok
     @allure.label.story:Labels
