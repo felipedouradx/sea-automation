@@ -35,7 +35,7 @@ jobs:
                  -o allure-results ./features
 
       - name: Upload Allure Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results
