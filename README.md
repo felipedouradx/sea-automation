@@ -7,12 +7,6 @@ Para execução dos testes é necessário instalar os seguintes recursos:
 * Selenium
 * VncViewer(opcional)
 
-## Guia de Instalação
-* **psycopg2** - Para instalar a lib psycopg2, faz-se necessário adicionar a seguinte dependência do python previamente:
-
-`sudo apt-get install python3-dev`
-`pip install psycopg2`
-
 ## Descrição
 Execução de testes funcionais utilizando Behave, Selenium e Python.
 
@@ -119,14 +113,6 @@ das features.
 Após a conclusão dos testes o relatório do Allure pode ser gerado através de um link, a partir do comando a seguir:
 
     allure serve allure-results
-
-
-## Evolução
-O processo de evolução da automação está mapeado em 2 etapas até aqui, que consistem na otimização da execução dos 
-testes e a integração com outras ferramentas. Conforme listado abaixo:
-
-* Integração do ambiente Allure com a nuvem;
-* Integração ao CI.
 
 
 ## Suporte
