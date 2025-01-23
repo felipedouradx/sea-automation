@@ -32,7 +32,6 @@ class HomePage:
         self.top_button_item_9 = '/html/body/div[1]/main/div[2]/div[1]/div[10]/div'
 
     def selecionar_filtros_ativos(self):
-        self.helper.selenium_wait_clickable(2, By.XPATH, self.botao_filtro_ativos)
         botao_filtro_ativos = self.context.browser.find_element(By.XPATH, self.botao_filtro_ativos)
         botao_filtro_ativos.click()
 

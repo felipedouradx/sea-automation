@@ -211,6 +211,8 @@ def step_impl(context):
 
 @then("O contador é validado com sucesso")
 def step_impl(context):
+    helpers = Helpers(context)
+    helpers.selenium_wait_presence(2, By.XPATH, '/html/body/div/main/div[2]/div[2]/div[2]/div[2]/span')
     contador_element = context.browser.find_element(By.XPATH, '/html/body/div/main/div[2]/div[2]/div[2]/div[2]/span')
     span_text = contador_element.text.strip()
 

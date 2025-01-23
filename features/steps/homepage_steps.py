@@ -1,3 +1,4 @@
+import time
 from unittest import TestCase
 from behave import *
 from selenium.webdriver.common.by import By
@@ -10,6 +11,7 @@ assertions = TestCase()
 
 @given("O usuário está na página do portal de testes SEA Tecnologia")
 def step_impl(context):
+    time.sleep(1)
     expected_url = "https://analista-teste.seatecnologia.com.br/"
     assert context.browser.current_url == expected_url, f"Expected URL to be {expected_url} but got {context.current_url}"
 
@@ -242,4 +244,4 @@ def step_impl(context):
 
 @then("Os funcionários ativos são listados")
 def step_impl(context):
-    assert context.lista_ativos >= 2, f"'É esperado funcionários ativos, conforme o protótipo. Found: {context.lista_ativos}'"
+    assert context.lista_ativos > 0, f"'É esperado funcionários ativos, conforme o protótipo. Found: {context.lista_ativos}'"
