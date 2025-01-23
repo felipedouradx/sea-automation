@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   hub:
-    image: selenium/hub:latest
+    image: selenium/hub:4.9.0
     container_name: hub
     ports:
       - "4442-4444:4442-4444"
@@ -17,7 +17,7 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     ports:
-      - "5900:5900"
+      - "5901:5900"
     volumes:
       - /dev/shm:/dev/shm
 
@@ -32,7 +32,7 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     ports:
-      - "5900:5901"
+      - "5902:5900"
     volumes:
       - /dev/shm:/dev/shm
 
@@ -47,7 +47,7 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     ports:
-      - "5900:5902"
+      - "5903:5900"
     volumes:
       - /dev/shm:/dev/shm
 

@@ -1,5 +1,6 @@
 @allure.label.epic:CadastroFuncionário
 Feature: Cadastro de funcionário com validação via API
+    #SEA-01
 
     @ok
     @allure.label.story:Labels
@@ -23,7 +24,7 @@ Feature: Cadastro de funcionário com validação via API
 
     Examples:
       | nome      | cpf         | data_nascimento | rg      | ca    | status  | genero    | cargo | atividade | uses_epi | epi                   |
-      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Inativo | feminino  | 02    | 00        | False    | **                    |
+      | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Inativo | feminino  | 01    | 00        | False    | **                    |
       | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Ativo   | masculino | 03    | 04        | True     | Luvas descartáveis    |
       | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Ativo   | masculino | 02    | 00        | False    | **                    |
       | Tester    | 11122233344 | 01012000        | 1234567 | 00001 | Ativo   | masculino | 03    | 01        | True     | Protetor auditivo     |

@@ -1,5 +1,6 @@
 @allure.label.epic:CadastroFuncionário
 Feature: Cadastro de funcionário com inserção de arquivo
+    #SEA-02
 
     @ok
     @allure.label.story:Labels

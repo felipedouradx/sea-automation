@@ -2,7 +2,6 @@ from unittest import TestCase
 from behave import *
 from selenium.webdriver.common.by import By
 
-from lib.selenium_helper import Helpers
 from pages.home_page import HomePage
 
 use_step_matcher("parse")
@@ -11,7 +10,8 @@ assertions = TestCase()
 
 @given("O usuário está na página do portal de testes SEA Tecnologia")
 def step_impl(context):
-    pass
+    expected_url = "https://analista-teste.seatecnologia.com.br/"
+    assert context.browser.current_url == expected_url, f"Expected URL to be {expected_url} but got {context.current_url}"
 
 
 @when("O filtro Ver apenas ativos é selecionado")

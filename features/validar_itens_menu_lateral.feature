@@ -1,5 +1,6 @@
 @allure.label.epic:HomePage
 Feature: Validar itens do menu lateral
+  #SEA-12
 
     @ok
     @allure.label.story:Labels

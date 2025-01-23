@@ -12,7 +12,8 @@ def before_scenario(context, scenario):
     browsers_list = browser.split(',')
     headless = context.config.userdata.get('headless', 'false').lower() == 'true'
     remote = context.config.userdata.get('remote', 'false').lower() == 'true'
-    WebdriverManager.set_driver(browser=browsers_list, headless=headless, remote=remote, context=context)
+    device = context.config.userdata.get('device', 'desktop')
+    WebdriverManager.set_driver(browser=browsers_list, headless=headless, remote=remote, device=device, context=context)
     WebdriverManager.get_base_url(context=context, base_url=environment)
     logger.info(f"\n\n\tScenario Name - {scenario.name}\n")
 

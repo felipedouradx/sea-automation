@@ -9,7 +9,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from datetime import datetime
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 
 from lib.selenium_helper import Helpers
 
@@ -43,6 +42,7 @@ class CadastroPage:
         self.atividade_5_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[5]'
         self.adicionar_epi_button = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[2]/span'
         self.epi_1_dropdown = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[2]/div/div[1]/div/div/span[2]'
+        self.epi_checkbox = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/label/span[1]/input'
         self.epi_1_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[1]'
         self.epi_2_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[2]'
         self.epi_3_option = '/html/body/div[3]/div/div/div[2]/div[1]/div/div/div[3]'
@@ -53,6 +53,7 @@ class CadastroPage:
         self.epi_option_xpath = '/html/body/div[4]/div/div/div[2]/div[1]/div/div/div[2]'
         self.add_epi_button_xpath = '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/div/div[2]/span'
         self.atestado_input = 'file'
+        self.save_button = '/html/body/div[1]/main/div[2]/div[2]/form/button'
 
     def selecionar_add_funcionario(self):
         self.helper.selenium_wait_clickable(2, By.CSS_SELECTOR, self.botao_add_funcionario_selector)
@@ -180,7 +181,7 @@ class CadastroPage:
         file_input.send_keys(file_path)
 
     def salvar_cadastro(self):
-        save_button = self.context.browser.find_element(By.XPATH, '/html/body/div[1]/main/div[2]/div[2]/form/button')
+        save_button = self.context.browser.find_element(By.XPATH, self.save_button)
         save_button.click()
 
     def validar_cadastro_api(self, nome, status, genero, cpf, rg, ca, data_nascimento, cargo, atividade, uses_epi, epi):
@@ -312,8 +313,7 @@ class CadastroPage:
         if uses_epi == 'True':
             pass
         elif uses_epi == 'False':
-            epi_checkbox = self.context.browser.find_element(By.XPATH,
-                                                             '/html/body/div[1]/main/div[2]/div[2]/form/div[4]/div/label/span[1]/input')
+            epi_checkbox = self.context.browser.find_element(By.XPATH, self.epi_checkbox)
             epi_checkbox.click()
 
     def selecionar_equipamento_epi(self, epi, uses_epi):

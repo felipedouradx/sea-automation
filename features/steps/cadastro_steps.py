@@ -2,7 +2,6 @@ from unittest import TestCase
 from behave import *
 from selenium.common import TimeoutException, NoAlertPresentException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import datetime
 import random
